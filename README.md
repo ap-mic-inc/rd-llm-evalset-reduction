@@ -7,27 +7,27 @@ Build representative reduced eval sets for LLM benchmarks with stratified sampli
 
 ## Overview
 
-大型評測集通常能提供較穩定的模型比較結果，但完整跑完一次 benchmark 往往成本高、速度慢。  
-本專案的目的，是從完整評測集中自動挑選出一份較小、但仍具代表性的子集，盡可能保留：
+大型評測集通常能提供較穩定的模型比較結果，但完整執行一次 benchmark 往往成本高、耗時久。  
+本專案的目標，是從完整評測集中自動挑選出一份較小、但仍具代表性的子集，盡可能保留：
 
 - 各模型的整體分數
 - 模型彼此的相對排名
 - 評測結果的穩定性
 
-目前流程會先根據各題在模型群上的平均答對率估計題目難度，將題目分為 `hard / medium / easy` 三層，再依母體難度比例進行分層抽樣，從完整題庫中搜尋最具代表性的 300 題候選子集。之後再以 Bootstrap 重抽分析與統計檢定，檢查這份子集是否能近似重現完整評測集的結果。
+目前流程會先根據各題在模型群上的平均答對率估計題目難度，將題目分為 `hard / medium / easy` 三層，再依母體難度比例進行分層抽樣，從完整題庫中搜尋最具代表性的 300 題候選子集。接著再透過 Bootstrap 重抽分析與統計檢定，檢查這份子集是否能近似重現完整評測集的結果。
 
 ---
 
 ## Features
 
 - 從 Hugging Face `twinkle-ai/datasets` 抓取多模型 `eval-logs-and-scores`
-- 自動整理成題目 × 模型的統一評測表格
+- 自動整理成「題目 × 模型」的統一評測表格- 自動整理成「題目 × 模型」的統一評測表格
 - 根據題目平均答對率估計題目難度
 - 依母體難度比例進行分層抽樣
 - 多次抽樣搜尋最佳縮小版評測集
 - 提供 Bootstrap 穩定性分析
 - 提供模型層級統計檢定結果
-- 輸出清楚分資料夾整理的結果檔案
+- 輸出結構清楚、便於追蹤的結果檔案
 
 ---
 
@@ -39,12 +39,27 @@ Build representative reduced eval sets for LLM benchmarks with stratified sampli
 ├── generate_evalsubset.py
 ├── README.md
 └── ...
-Main Scripts
 
+
+Main Scripts
 build_eval_results_table.py
-從 Hugging Face twinkle-ai/datasets 抓取各模型的 eval-logs-and-scores，整理成統一 CSV 表格。
+
+從 Hugging Face twinkle-ai/datasets 抓取各模型的 eval-logs-and-scores，並整理成統一的 CSV 表格。
 
 generate_evalsubset.py
+
+讀取整理好的模型答題表格，進行題目難度分析、分層抽樣、最佳子集搜尋、Bootstrap 穩定性分析與統計檢定。
+
+
+
+Main Scripts
+build_eval_results_table.py
+
+從 Hugging Face twinkle-ai/datasets 抓取各模型的 eval-logs-and-scores，並整理成統一的 CSV 表格。
+從 Hugging Face twinkle-ai/datasets 抓取各模型的 eval-logs-and-scores，並整理成統一的 CSV 表格。
+
+generate_evalsubset.py
+
 讀取整理好的模型答題表格，進行題目難度分析、分層抽樣、最佳子集搜尋、Bootstrap 穩定性分析與統計檢定。
 
 Installation
@@ -65,9 +80,9 @@ Data Source
 
 本專案使用的模型評測結果資料來源：
 
-Hugging Face: https://huggingface.co/twinkle-ai/datasets
+Hugging Face: twinkle-ai/datasets
 
-這些 dataset 包含不同模型對 TMMLU+ 題目的作答紀錄與評分結果。
+這些 datasets 包含不同模型對 TMMLU+ 題目的作答紀錄與評分結果。
 
 Quick Start
 Step 1. Build the merged evaluation table
@@ -85,12 +100,11 @@ tmmlu_model_results_merged.csv
 tmmlu_model_results_merged_complete_rows_only.csv
 Step 2. Generate the reduced eval subset
 
-使用主程式根據完整題庫建立縮小版評測集。
+使用主程式根據完整題庫建立縮小版評測集：
 
 python generate_evalsubset.py
-What generate_evalsubset.py Does
 
-這支主程式會依序完成以下流程：
+這支主程式會依序完成以下流程。
 
 1. Detect model columns
 
@@ -134,7 +148,6 @@ Output Structure
 
 執行完成後，輸出通常會整理成以下結構：
 
-.
 ├── reduced_eval_set_300_population_ratio.csv
 ├── item_analysis/
 │   └── item_statistics_with_difficulty.csv
@@ -186,42 +199,41 @@ significance_tests/
 
 How to Judge Whether the Reduced Eval Set Is Good
 
-建議優先看以下幾個指標。
+建議優先查看以下幾個指標。
 
 1. MAE
 
-平均絕對誤差，表示子集與完整題庫相比，平均每個模型分數差多少。
-
 越小越好
 
-例如 0.0078 表示平均只差 0.78 個百分點
+平均絕對誤差，表示子集與完整題庫相比，平均每個模型分數差多少。
+例如 0.0078 表示平均只差 0.78 個百分點。
 
 2. Max abs diff
 
-所有模型中，偏差最大的模型與完整題庫相比差多少。
-
 越小越好
+
+所有模型中，偏差最大的模型與完整題庫相比差多少。
 
 3. Spearman rank corr
 
-子集與完整題庫的模型排名相關。
-
 越接近 1 越好
 
-若接近 1，表示模型相對排名幾乎完整保留
+子集與完整題庫的模型排名相關。
+若接近 1，表示模型相對排名幾乎完整保留。
 
 4. n_outside_tolerance
 
+越小越好
+
 有多少模型的誤差超過容忍值。
 目前預設容忍值為 ±3%。
+若為 0，代表所有模型都在可接受誤差範圍內。
 
-0 代表所有模型都在可接受誤差內
-
-5. full accuracy 落在 subset 95% CI 內的模型數
-
-有多少模型在完整題庫上的分數，落在子集估計的 95% 信賴區間中。
+5. Full accuracy in subset 95% CI
 
 越接近全部模型數越好
+
+表示完整題庫中的模型分數，有多少落在子集 Bootstrap 所估計的 95% 信賴區間內。
 
 How to Read Bootstrap Results
 
@@ -231,50 +243,29 @@ Bootstrap 的目的不是重新產生一份新考卷，而是檢查：
 
 也就是說，若題目組成有些微抽樣波動，模型分數與整體結果是否仍維持相近。
 
-建議重點看兩份檔案
+建議優先查看以下兩份檔案。
+
 bootstrap_results/bootstrap_per_model_stability.csv
 
-重點欄位：
+重點欄位解讀方式：
 
-bootstrap_mean
+bootstrap_mean：越接近 full_accuracy 越好
 
-bootstrap_std
+bootstrap_std：越小越穩定
 
-bootstrap_ci_lower_95
+full_in_bootstrap_ci = True：表示與母體結果相容
 
-bootstrap_ci_upper_95
-
-full_in_bootstrap_ci
-
-within_tolerance_rate
-
-解讀方式：
-
-bootstrap_mean 越接近 full_accuracy 越好
-
-bootstrap_std 越小越穩定
-
-full_in_bootstrap_ci = True 表示與母體相容
-
-within_tolerance_rate 越接近 1 越好
+within_tolerance_rate：越接近 1 越好
 
 bootstrap_results/bootstrap_overall_summary.csv
 
-重點欄位：
+重點欄位解讀方式：
 
-mae
+mae：越小越好
 
-max_abs_diff
+max_abs_diff：越小越好
 
-spearman_rank_corr
-
-解讀方式：
-
-mae 越小越好
-
-max_abs_diff 越小越好
-
-spearman_rank_corr 越接近 1 越好
+spearman_rank_corr：越接近 1 越好
 
 How to Read Statistical Tests
 significance_tests/significance_tests_across_models.csv
@@ -287,7 +278,7 @@ wilcoxon_signed_rank
 
 用途是檢查：
 
-across 所有模型來看，300 題子集是否存在顯著的整體系統性偏差
+從所有模型整體來看，300 題子集是否存在顯著的系統性偏差
 
 解讀方式：
 
@@ -299,17 +290,7 @@ significance_tests/significance_tests_per_model.csv
 
 對每個模型 individually 進行近似比例檢定。
 
-重點欄位：
-
-subset_accuracy
-
-full_accuracy
-
-p_value
-
-significant_at_0.05
-
-解讀方式：
+重點欄位解讀方式：
 
 significant_at_0.05 = False：未觀察到顯著差異
 
@@ -336,3 +317,11 @@ Bootstrap 下的 within_tolerance_rate 高
 Across-model 檢定未顯示顯著系統性偏差
 
 若同時滿足以上條件，通常可合理認為這份子集具備作為快速評測集的潛力。
+
+Notes
+
+本方法的核心目標不是單純「縮小題數」，而是希望在成本、速度與代表性之間取得平衡。
+
+統計檢定結果應與誤差指標、排名相關性與 Bootstrap 穩定性一起綜合解讀。
+
+若未來 benchmark 題庫或模型集合改變，建議重新執行子集搜尋與驗證流程。
