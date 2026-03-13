@@ -43,7 +43,7 @@
 ├── README.md                        # 專案說明文件
 ├── build_eval_results_table.py      # 抓取並整理評測結果表格
 ├── generate_evalsubset.py           # 執行分層抽樣、搜尋代表性子集與統計驗證
-└── tmmlu_model_results_merged_*.csv # 模型評測結果整合資料
+└── examples/                        # 模型評測結果整合範例資料
 ```
 ---
 
