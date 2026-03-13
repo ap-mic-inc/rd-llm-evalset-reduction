@@ -142,7 +142,7 @@ python generate_evalsubset.py
 ### 各檔案用途
 
 - `reduced_eval_set_300_population_ratio.csv`  
-  最終選出的 300 題縮小版評測集（核心產出）。
+  最終選出的 300 題縮小版評測集CSV檔（核心產出）。
 
 - `item_analysis/item_statistics_with_difficulty.csv`  
   完整題庫各題統計資訊（答對率、變異數、難度分組）。
@@ -158,6 +158,13 @@ python generate_evalsubset.py
 
 - `significance_tests/`  
   統計檢定結果報表。
+
+### Step 3. 轉換回TMMLU+的jsonl格式（format transformation）
+
+先檢視篩選到的評測集csv檔，如有必要可在此手動調整檔案內容(增刪題目)
+`reduced_eval_set_300_population_ratio.csv`
+
+執行 `convert_csv_to_jsonl` 程式，生成 `reduced_eval_set_300_tmmluplus.jsonl`,即可用於一般評測程式
 
 ---
 
