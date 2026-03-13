@@ -36,14 +36,17 @@
 
 ---
 
-## 📂 Repository Structure 專案結構
+
+若你想寫得更完整一點，也可以用這個版本：
+
 
 ```text
 .
-├── build_eval_results_table.py   # 抓取並整併評測結果表格
-├── generate_evalsubset.py        # 執行分析、抽樣、搜尋與驗證的主程式
-├── README.md
-└── ...
+├── convert_csv_to_jsonl/            # CSV 轉 JSONL 的相關程式與資料夾
+├── README.md                        # 專案說明文件
+├── build_eval_results_table.py      # 抓取並整理評測結果表格
+├── generate_evalsubset.py           # 執行分層抽樣、搜尋代表性子集與統計驗證
+└── tmmlu_model_results_merged_*.csv # 模型評測結果整合資料
 ```
 
 ---
