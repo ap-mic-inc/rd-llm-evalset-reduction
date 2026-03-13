@@ -36,10 +36,7 @@
 
 ---
 
-
-若你想寫得更完整一點，也可以用這個版本：
-
-
+## 📁 Repository Structure 專案結構
 ```text
 .
 ├── convert_csv_to_jsonl/            # CSV 轉 JSONL 的相關程式與資料夾
@@ -48,7 +45,6 @@
 ├── generate_evalsubset.py           # 執行分層抽樣、搜尋代表性子集與統計驗證
 └── tmmlu_model_results_merged_*.csv # 模型評測結果整合資料
 ```
-
 ---
 
 ## 🛠 Installation & Setup 安裝指引
