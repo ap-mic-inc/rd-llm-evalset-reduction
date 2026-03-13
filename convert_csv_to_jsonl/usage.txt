@@ -1,3 +1,3 @@
-python convert_tmmlu_csv_to_jsonl.py \python Convert_tmmlu_csv_to_jsonl.py \
+python convert_tmmlu_csv_to_jsonl.py \
   --input_csv reduced_eval_set_300_population_ratio.csv \
   --output_jsonl reduced_eval_set_300_tmmluplus.jsonl--output_jsonl
